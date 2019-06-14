@@ -1,5 +1,7 @@
-# JSON Extra
----
+JSON Extra
+=====
+[![Build Status](https://travis-ci.org/den4uk/jsonextra.svg?branch=master)](https://travis-ci.org/den4uk/jsonextra)
+
 
 ## Installation
 
