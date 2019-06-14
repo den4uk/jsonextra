@@ -1,4 +1,3 @@
-=====
 # JSON Extra
 ---
 
@@ -11,7 +10,7 @@ $ pip install jsonextra
 
 ## Usage
 
-Use as normal json library
+Use `json` as normal once imported
 
 ```
 >>> import jsonextra as json
