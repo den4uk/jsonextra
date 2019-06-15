@@ -1,5 +1,5 @@
 import os.path
-from setuptools import setup, find_packages
+from setuptools import setup
 from jsonextra import __version__
 
 req = os.path.join(os.path.dirname(__file__), 'requirements.txt')
@@ -18,7 +18,7 @@ setup(
     description='JSON Extra | JSON that gives you extra datetime and uuid data types',
     author='Denis Sazonov',
     author_email='den@saz.lt',
-    packages=find_packages(),
+    packages=['jsonextra'],
     license='Restricted',
     install_requires=install_requires,
     include_package_data=True,
@@ -30,6 +30,6 @@ setup(
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
-    python_requires=">=3.6",
+    python_requires=">=3.5",
     zip_safe=True,
 )
