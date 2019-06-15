@@ -19,7 +19,7 @@ setup(
     author='Denis Sazonov',
     author_email='den@saz.lt',
     packages=['jsonextra'],
-    license='Restricted',
+    license='MIT License',
     install_requires=install_requires,
     include_package_data=True,
     long_description=long_description,
