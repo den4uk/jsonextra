@@ -1,7 +1,8 @@
 include README.md
 include LICENSE
 include requirements.txt
-global-exclude env
+global-exclude env/
+global-exclude tests/
 global-exclude __pycache__
 global-exclude *.py[cod]
 global-exclude .tox
