@@ -8,6 +8,9 @@ install:
   - pip install pytest
   - pip install coverage
   - pip install pytest-cov
+  - pip install coveralls
   - pip install -r requirements.txt
 script:
   - pytest --cov=jsonextra tests/
+after_sucess:
+  coveralls
