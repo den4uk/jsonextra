@@ -12,5 +12,4 @@ install:
   - pip install -r requirements.txt
 script:
   - pytest --cov=jsonextra tests/
-after_sucess:
-  coveralls
+  - coveralls
