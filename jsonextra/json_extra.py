@@ -3,7 +3,7 @@ import json
 import uuid
 import dateutil.parser
 
-uuid_rex = re.compile(r'[0-9a-f]{8}\-?[0-9a-f]{4}\-?4[0-9a-f]{3}\-?[89ab][0-9a-f]{3}\-?[0-9a-f]{12}', re.I)
+uuid_rex = re.compile(r'^[0-9a-f]{8}\-?[0-9a-f]{4}\-?4[0-9a-f]{3}\-?[89ab][0-9a-f]{3}\-?[0-9a-f]{12}$', re.I)
 datetime_rex = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d [0-2]\d\:[0-5]\d\:[0-5]\d')
 date_rex = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d$')
 
