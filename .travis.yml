@@ -5,11 +5,10 @@ python:
   - "3.7"
 install:
   - pip install pip -U
-  - pip install pytest
-  - pip install coverage
-  - pip install pytest-cov
-  - pip install coveralls
-  - pip install -r requirements.txt
+  - pip install -r requirements-dev.txt
 script:
+  - flake8 --ignore=E501 --statistics jsonextra/
   - pytest --cov=jsonextra tests/
+after_success:
   - coveralls
+  - codecov

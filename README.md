@@ -1,8 +1,10 @@
-JSON Extra
+jsonextra
 =====
 [![Build Status](https://travis-ci.org/den4uk/jsonextra.svg?branch=master)](https://travis-ci.org/den4uk/jsonextra)
-[![Coverage Status](https://coveralls.io/repos/github/den4uk/jsonextra/badge.svg?branch=master)](https://coveralls.io/github/den4uk/jsonextra?branch=master)
+[![codecov](https://codecov.io/gh/den4uk/jsonextra/branch/master/graph/badge.svg)](https://codecov.io/gh/den4uk/jsonextra)
 [![PyPI version](https://badge.fury.io/py/jsonextra.svg)](https://badge.fury.io/py/jsonextra)
+
+_is same as `json` library but with extra support for `uuid` and `datetime` data types_
 
 ## Installation
 
@@ -31,7 +33,7 @@ assert json.loads(my_json) == my_data  # True
 ```
 
 
-## Extra supported data types
+## Supported extra data types
 
 - datetime.date
 - datetime.datetime
