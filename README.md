@@ -13,10 +13,21 @@ $ pip install jsonextra
 
 ## Usage
 
-Use `json` as normal once imported
+Use just like `json` as normal once imported
 
-```
->>> import jsonextra as json
+```python
+import uuid, datetime  # for creation of `my_data` object
+import jsonextra as json
+
+my_data = {'id': uuid.uuid4(), 'created': datetime.date.today()}
+# my_data --> {'id': uuid.UUID('5f7660c5-88ea-46b6-93e2-860d5b7a0271'), 'created': datetime.date(2019, 6, 16)}
+
+# Serializes the key values to stringified versions
+my_json = json.dumps(my_data)
+# my_json --> '{"id": "5f7660c5-88ea-46b6-93e2-860d5b7a0271", "created": "2019-06-16"}'
+
+# Deserializes the object and confirms the output matches `my_data`
+assert json.loads(my_json) == my_data  # True
 ```
 
 
