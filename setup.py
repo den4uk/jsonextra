@@ -20,6 +20,7 @@ setup(
     author_email='den@saz.lt',
     packages=['jsonextra'],
     license='MIT License',
+    keywords="json uuid datetime date".split(),
     install_requires=install_requires,
     include_package_data=True,
     long_description=long_description,
