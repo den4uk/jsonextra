@@ -75,6 +75,8 @@ def test_loads_many(py_obj, json_obj):
 
 
 odd_cases = [
+    ({'x': datetime.datetime(2019, 6, 16, 13, 31, 37)}, '{"x": "2019-06-16T13:31:37"}'),  # Uses ISO8601 as input
+    ({'x': datetime.datetime(2019, 6, 16, 13, 31, 37, 6399)}, '{"x": "2019-06-16T13:31:37.006399"}'),  # Uses ISO8601 as input
     ({'x': '2020-12-32'}, '{"x": "2020-12-32"}'),  # Incorrect date
     ({'x': '2019-13-01 25:64:02'}, '{"x": "2019-13-01 25:64:02"}'),  # Incorrect date/time
     ({'x': '00000000-0000-0000-0000-000000000000'}, '{"x": "00000000-0000-0000-0000-000000000000"}'),  # Not correctly structured guid
