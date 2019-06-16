@@ -1,10 +1,11 @@
 jsonextra
 =====
 [![Build Status](https://travis-ci.org/den4uk/jsonextra.svg?branch=master)](https://travis-ci.org/den4uk/jsonextra)
-[![codecov](https://codecov.io/gh/den4uk/jsonextra/branch/master/graph/badge.svg)](https://codecov.io/gh/den4uk/jsonextra)
-[![PyPI version](https://badge.fury.io/py/jsonextra.svg)](https://badge.fury.io/py/jsonextra)
+[![Codecov](https://codecov.io/gh/den4uk/jsonextra/branch/master/graph/badge.svg)](https://codecov.io/gh/den4uk/jsonextra)
+[![PyPI Version](http://img.shields.io/pypi/v/jsonextra.svg)](https://pypi.python.org/pypi/jsonextra)
+[![License](http://img.shields.io/pypi/l/jsonextra.svg)](https://pypi.python.org/pypi/jsonextra)
 
-_is same as `json` library but with extra support for `uuid` and `datetime` data types_
+_is same as `json` library but with extra support for `uuid` and `datetime` data classes_
 
 ## Installation
 
@@ -15,26 +16,36 @@ $ pip install jsonextra
 
 ## Usage
 
-Use just like `json` as normal once imported
+Use just like `json` as normal once imported, but with addition of extra data classes.
 
 ```python
 import uuid, datetime  # for creation of `my_data` object
-import jsonextra as json
+import jsonextra
 
 my_data = {'id': uuid.uuid4(), 'created': datetime.date.today()}
 # my_data --> {'id': uuid.UUID('5f7660c5-88ea-46b6-93e2-860d5b7a0271'), 'created': datetime.date(2019, 6, 16)}
 
 # Serializes the key values to stringified versions
-my_json = json.dumps(my_data)
+my_json = jsonextra.dumps(my_data)
 # my_json --> '{"id": "5f7660c5-88ea-46b6-93e2-860d5b7a0271", "created": "2019-06-16"}'
 
 # Deserializes the object and confirms the output matches `my_data`
-assert json.loads(my_json) == my_data  # True
+assert jsonextra.loads(my_json) == my_data  # True
 ```
 
 
-## Supported extra data types
+##### `.dump(obj, fp, **kwargs)` & `.dumps(obj, **kwargs)`
+Will seriaze extra data classes into their string representations (`__str__`).
 
-- datetime.date
-- datetime.datetime
-- uuid.UUID
+
+##### `.load(fp, **kwargs)` & `.loads(s, **kwargs)`
+Will deseriaze any stings, which match patterns of extra supported data classes. For example, if something looks like a _uuid_ - it will be converted to `uuid.UUID`.
+If this behaviour is undesired, please use built-in `json.loads` method instead of `jsonextra.loads`.
+
+
+
+## Supported extra data classes
+
+- `datetime.date`
+- `datetime.datetime`
+- `uuid.UUID`
