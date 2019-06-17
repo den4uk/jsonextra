@@ -35,13 +35,13 @@ assert jsonextra.loads(my_json) == my_data  # True
 
 
 ##### `.dump(obj, fp, **kwargs)` & `.dumps(obj, **kwargs)`
-Will seriaze extra data classes into their string representations (`__str__`).
+Will serialize extra data classes into their string representations (`__str__`).
 Note: for _datetime_ objects, the `__str__` is dumped to an ISO8601-like format: `yyyy-mm-dd HH:MM:SS`, and it is the same format that will be expected by `.loads` method.
 
 
 ##### `.load(fp, **kwargs)` & `.loads(s, **kwargs)`
-Will deseriaze any stings, which match patterns of extra supported data classes. For example, if something looks like a _uuid_ - it will be converted to `uuid.UUID`.
-If this behaviour is undesired, please use built-in `json.loads` method instead of `jsonextra.loads`.
+Will deserialize any stings, which match patterns of extra supported data classes. For example, if something looks like a _uuid_ - it will be converted to `uuid.UUID`.
+If this behaviour is undesired, please use the built-in `json.loads` method instead of `jsonextra.loads`.
 
 
 
