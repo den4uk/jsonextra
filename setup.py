@@ -1,29 +1,34 @@
+import re
 import os.path
 from setuptools import setup
-from jsonextra import __version__
-
-req = os.path.join(os.path.dirname(__file__), 'requirements.txt')
-with open(req, 'rt', encoding='utf-8') as f:
-    install_requires = [dep for dep in f.read().splitlines() if not dep.startswith('#')]
 
 
-reme = os.path.join(os.path.dirname(__file__), 'README.md')
-with open(reme, 'rt', encoding='utf-8') as f:
-    long_description = f.read()
+def readfile(fls: list):
+    with open(os.path.join(os.path.dirname(__file__), *fls), 'rt', encoding='utf-8') as fh:
+        return fh.read()
+
+
+_version = re.search('__version__ = [\'"](.+)[\'"]', readfile(['jsonextra', '__init__.py'])).groups()[0]
+
+
+install_requires = [
+    dep for dep in readfile(['requirements.txt']).splitlines()
+    if not dep.startswith('#')
+]
 
 
 setup(
     name='jsonextra',
-    version=__version__,
-    description='JSON Extra | JSON that gives you extra datetime and uuid data types',
+    version=_version,
+    description='JSON Extra | JSON that gives you extra datetime, uuid and bytes data types',
     author='Denis Sazonov',
     author_email='den@saz.lt',
     packages=['jsonextra'],
     license='MIT License',
-    keywords="json uuid datetime date".split(),
+    keywords="json uuid datetime date bytes".split(),
     install_requires=install_requires,
     include_package_data=True,
-    long_description=long_description,
+    long_description=readfile(['README.md']),
     long_description_content_type="text/markdown",
     url="https://github.com/den4uk/jsonextra",
     classifiers=[
