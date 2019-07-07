@@ -35,8 +35,7 @@ assert jsonextra.loads(my_json) == my_data  # True
 
 
 ##### `.dump(obj, fp, **kwargs)` & `.dumps(obj, **kwargs)`
-Will serialize extra data classes into their string representations (`__str__`).
-Note: for _datetime_ objects, the `__str__` is dumped to an ISO8601-like format: `yyyy-mm-dd HH:MM:SS`, and it is the same format that will be expected by `.loads` method.
+Will serialize extra data classes into their string (`__str__`) or special representations (_eg: `.isoformat`, etc._).
 
 
 ##### `.load(fp, **kwargs)` & `.loads(s, **kwargs)`
@@ -44,10 +43,21 @@ Will deserialize any stings, which match patterns of extra supported data classe
 If this behaviour is undesired, please use the built-in `json.loads` method instead of `jsonextra.loads`.
 
 
-
 ## Supported extra data classes
 
 - `datetime.date`
+- `datetime.time`
 - `datetime.datetime`
 - `uuid.UUID`
 - `bytes`
+
+
+## How it works
+
+An extra supported python object is dumped to a _string_ value. When loading a serialized json object, any values matching the string supported data class, will be converted to their expected data class instances.
+It works by the principle of _If it looks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck_.
+
+
+## Contributions
+
+Contibutions are welcome, please submit your pull requests into `dev` branch for a review.
