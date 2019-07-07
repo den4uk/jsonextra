@@ -11,7 +11,8 @@ datetime_rex = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d[\sT][0-2]\d\:[0-5]\d\:[0-5]\
 date_rex = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d$')
 time_rex = re.compile(r'^[0-2]\d\:[0-5]\d:[0-5]\d\.?\d{,6}?$')
 bytes_prefix = 'base64:'
-bytes_rex = re.compile(r'^base64:([\w\d+/]*?\={,2}?)$')
+bytes_rex = bytes_prefix + r'([\w\d+/]*?\={,2}?)$'
+bytes_rex = re.compile(bytes_rex, re.DOTALL)
 
 
 class ExtraEncoder(json.JSONEncoder):

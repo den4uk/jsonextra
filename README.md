@@ -39,23 +39,38 @@ Will serialize extra data classes into their string (`__str__`) or special repre
 
 
 ##### `.load(fp, **kwargs)` & `.loads(s, **kwargs)`
-Will deserialize any stings, which match patterns of extra supported data classes. For example, if something looks like a _uuid_ - it will be converted to `uuid.UUID`.
+Will deserialize any stings, which match patterns of extra supported data classes.
+For example, if something looks like a _uuid_ - it will be converted to `uuid.UUID`.
 If this behaviour is undesired, please use the built-in `json.loads` method instead of `jsonextra.loads`.
 
 
 ## Supported extra data classes
 
-- `datetime.date`
-- `datetime.time`
-- `datetime.datetime`
-- `uuid.UUID`
-- `bytes`
+| Python Data Class | Python Object (deserialized) | JSON Object (serialized) |
+|-------------------|------------------------------|--------------------------|
+| `datetime.date` | `datetime.date(2019, 1, 1)` | `"2019-01-01"` |
+| `datetime.time` | `datetime.time(23, 59, 11)` | `"23:59:11"`  |
+| `datetime.datetime` | `datetime.datetime(2019, 1, 1, 23, 59, 11)` | `"2019-01-01T23:59:11"` |
+| `uuid.UUID` | `uuid.UUID('5f7660c5-88ea-46b6-93e2-860d5b7a0271')` | `"5f7660c5-88ea-46b6-93e2-860d5b7a0271"` |
+| `bytes` | `b'\xd6aO\x1d\xd71Y\x05'` | `"base64:1mFPHdcxWQU="` |
+
+More examples of serialized/deserialized values can be found in tests ;p
+
+
+## Why?
+
+_Why would you want to use this library?_
+
+- If you work with a model-less data structures, and its data types expend beyond the JSON standard supports.
+- If your model schemas are too dynamic to be able to use model-based serializers, and requires to store more data types.
+- If your data structure does not fit with the JSON standard, and it needs expanding to support one or more data types.
 
 
 ## How it works
 
-An extra supported python object is dumped to a _string_ value. When loading a serialized json object, any values matching the string supported data class, will be converted to their expected data class instances.
-It works by the principle of _If it looks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck_.
+An extra supported python object is dumped to a _string_ value.
+When loading a serialized json object, any values matching the string supported data class, will be converted to their expected data class instances.
+> _If it looks like a duck, swims like a duck, and quacks like a duck, then it probably is a duck_.
 
 
 ## Contributions
