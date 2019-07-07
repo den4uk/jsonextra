@@ -5,7 +5,7 @@ jsonextra
 [![PyPI Version](http://img.shields.io/pypi/v/jsonextra.svg)](https://pypi.python.org/pypi/jsonextra)
 [![License](http://img.shields.io/pypi/l/jsonextra.svg)](https://pypi.python.org/pypi/jsonextra)
 
-_is same as `json` library but with extra support for `uuid` and `datetime` data classes_
+_same as `json` library, but with extra support for `bytes`, `uuid` and `datetime` data classes_
 
 ## Installation
 
@@ -50,3 +50,4 @@ If this behaviour is undesired, please use the built-in `json.loads` method inst
 - `datetime.date`
 - `datetime.datetime`
 - `uuid.UUID`
+- `bytes`
