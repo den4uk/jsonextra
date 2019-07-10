@@ -2,14 +2,16 @@ import re
 import json
 import uuid
 import base64
+import datetime
 import contextlib
 import dateutil.parser
 
 uuid_rex = re.compile(r'^[0-9a-f]{8}\-?[0-9a-f]{4}\-?4[0-9a-f]{3}\-?[89ab][0-9a-f]{3}\-?[0-9a-f]{12}$', re.I)
 datetime_rex = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d[\sT][0-2]\d\:[0-5]\d\:[0-5]\d')
 date_rex = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d$')
-bytes_prefix = 'base64:'
-bytes_rex = re.compile(r'^base64:([\w\d+/]*?\={,2}?)$')
+time_rex = re.compile(r'^[0-2]\d\:[0-5]\d:[0-5]\d\.?\d{,6}?$')
+BYTES_PREFIX = 'base64:'
+bytes_rex = re.compile(BYTES_PREFIX + r'([\w\d\+/]*?\={,2}?)$', re.DOTALL)
 
 
 class ExtraEncoder(json.JSONEncoder):
@@ -23,7 +25,9 @@ class ExtraEncoder(json.JSONEncoder):
             return super().default(obj)
         except TypeError:
             if isinstance(obj, bytes):
-                return (bytes_prefix + self.bytes_to_b64(obj))
+                return (BYTES_PREFIX + self.bytes_to_b64(obj))
+            elif isinstance(obj, (datetime.datetime, datetime.date, datetime.time)):
+                return obj.isoformat()
             return str(obj)
 
 
@@ -40,6 +44,8 @@ class ExtraDecoder(json.JSONDecoder):
                 return dateutil.parser.parse(value).date()
             elif datetime_rex.match(value):
                 return dateutil.parser.parse(value)
+            elif time_rex.match(value):
+                return dateutil.parser.parse(value).time()
             else:
                 try_bytes = bytes_rex.match(value)
                 if try_bytes:
