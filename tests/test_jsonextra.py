@@ -1,6 +1,7 @@
 import pytest
 import io
 import uuid
+import secrets
 import datetime
 import jsonextra
 
@@ -145,3 +146,10 @@ odd_cases = [
 @pytest.mark.parametrize('py_obj, json_obj', odd_cases)
 def test_loads_odd_cases(py_obj, json_obj):
     assert jsonextra.loads(json_obj) == py_obj
+
+
+def test_random_bytes():
+    for n in range(128):
+        my_obj = {'x': secrets.token_bytes(n)}
+        serialized = jsonextra.dumps(my_obj)
+        assert jsonextra.loads(serialized) == my_obj
