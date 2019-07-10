@@ -79,6 +79,7 @@ odd_cases = [
     ({'x': datetime.datetime(2019, 6, 16, 13, 31, 37, 6399)}, '{"x": "2019-06-16T13:31:37.006399"}'),  # Uses ISO8601 as input
     ({'x': '2020-12-32'}, '{"x": "2020-12-32"}'),  # Incorrect date
     ({'x': '2019-13-01 25:64:02'}, '{"x": "2019-13-01 25:64:02"}'),  # Incorrect date/time
+    ({'x': '2019-06-23 23:48:47 with some text'}, '{"x": "2019-06-23 23:48:47 with some text"}'),  # Includes tailing text
     ({'x': '00000000-0000-0000-0000-000000000000'}, '{"x": "00000000-0000-0000-0000-000000000000"}'),  # Not correctly structured guid
     ({'x': uuid.UUID('98f395f2-6ecb-46d8-98e4-926b8dfdd070')}, '{"x": "98F395F2-6ECB-46D8-98E4-926B8DFDD070"}'),  # Uppercase
     ({'x': uuid.UUID('98f395f2-6ecb-46d8-98e4-926b8dfdd070')}, '{"x": "98f395f26ecb46d898e4926b8dfdd070"}'),  # No dashes, but is valid
