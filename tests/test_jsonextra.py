@@ -5,25 +5,41 @@ import datetime
 import jsonextra
 
 
-dict_example = {
+dict_flat = {
     'id': uuid.UUID('d05c6319-0944-4dd6-819f-3a2dc6f7a3c2'),
     'town': 'Hill Valley',
     'episode': 2,
     'date': datetime.date(2015, 10, 21),
     'time': datetime.datetime(2019, 6, 14, 20, 43, 53, 207572),
+    'secret': b'\xd6aO\x1d\xd71Y\x05',
     'anone': None,
     'watch_again': True,
 }
 
-json_example = '{"id": "d05c6319-0944-4dd6-819f-3a2dc6f7a3c2", "town": "Hill Valley", "episode": 2, "date": "2015-10-21", "time": "2019-06-14 20:43:53.207572", "anone": null, "watch_again": true}'
+json_flat = '''{
+  "id": "d05c6319-0944-4dd6-819f-3a2dc6f7a3c2",
+  "town": "Hill Valley",
+  "episode": 2,
+  "date": "2015-10-21",
+  "time": "2019-06-14 20:43:53.207572",
+  "secret": "base64:1mFPHdcxWQU=",
+  "anone": null,
+  "watch_again": true
+}'''
 
 
 dict_nested = {
     'events': {
         'admin': uuid.UUID('c05c6319-0944-4dd6-819f-3a2dc6f7a3c2'),
-        'dates': [datetime.date(2016, 11, 22), datetime.date(2017, 12, 23)],
+        'dates': [
+            datetime.date(2016, 11, 22),
+            datetime.date(2017, 12, 23)
+        ],
         'uids': {
-            'other': [uuid.UUID('b05c6319-0944-4dd6-819f-3a2dc6f7a3c2'), uuid.UUID('a05c6319-0944-4dd6-819f-3a2dc6f7a3c2')],
+            'other': [
+                uuid.UUID('b05c6319-0944-4dd6-819f-3a2dc6f7a3c2'),
+                uuid.UUID('a05c6319-0944-4dd6-819f-3a2dc6f7a3c2')
+            ],
             'more': [
                 {
                     'a': datetime.date(2018, 1, 24)
@@ -36,23 +52,52 @@ dict_nested = {
     }
 }
 
-json_nested = '{"events": {"admin": "c05c6319-0944-4dd6-819f-3a2dc6f7a3c2", "dates": ["2016-11-22", "2017-12-23"], "uids": {"other": ["b05c6319-0944-4dd6-819f-3a2dc6f7a3c2", "a05c6319-0944-4dd6-819f-3a2dc6f7a3c2"], "more": [{"a": "2018-01-24"}, {"b": "2019-02-25"}]}}}'
+
+json_nested = '''{
+  "events": {
+    "admin": "c05c6319-0944-4dd6-819f-3a2dc6f7a3c2",
+    "dates": [
+      "2016-11-22",
+      "2017-12-23"
+    ],
+    "uids": {
+      "other": [
+        "b05c6319-0944-4dd6-819f-3a2dc6f7a3c2",
+        "a05c6319-0944-4dd6-819f-3a2dc6f7a3c2"
+      ],
+      "more": [
+        {
+          "a": "2018-01-24"
+        },
+        {
+          "b": "2019-02-25"
+        }
+      ]
+    }
+  }
+}'''
 
 
-def test_load():
-    i = io.StringIO(json_example)
-    assert jsonextra.load(i) == dict_example
+@pytest.mark.parametrize('py_obj, json_obj', [
+    (dict_flat, json_flat),
+    (dict_nested, json_nested),
+])
+def test_load(py_obj, json_obj):
+    i = io.StringIO(json_obj)
+    assert jsonextra.load(i) == py_obj
 
 
-def test_dump():
+@pytest.mark.parametrize('py_obj, json_obj', [
+    (dict_flat, json_flat),
+    (dict_nested, json_nested),
+])
+def test_dump(py_obj, json_obj):
     i = io.StringIO()
-    jsonextra.dump(dict_example, i)
-    assert i.getvalue() == json_example
+    jsonextra.dump(py_obj, i, indent=2)
+    assert i.getvalue() == json_obj
 
 
 many_list = [
-    (dict_example, json_example),
-    (dict_nested, json_nested),
     ({'x': 'foo'}, '{"x": "foo"}'),
     ({'x': 2}, '{"x": 2}'),
     ({'x': True}, '{"x": true}'),
@@ -61,6 +106,8 @@ many_list = [
     ({'x': datetime.date(1991, 2, 16)}, '{"x": "1991-02-16"}'),
     ({'x': datetime.datetime(2001, 12, 1, 14, 58, 17)}, '{"x": "2001-12-01 14:58:17"}'),
     ({'x': datetime.datetime(2001, 12, 1, 14, 58, 17, 123456)}, '{"x": "2001-12-01 14:58:17.123456"}'),
+    ({'x': b'hello'}, '{"x": "base64:aGVsbG8="}'),
+    ({'x': b''}, '{"x": "base64:"}'),
 ]
 
 
@@ -85,6 +132,7 @@ odd_cases = [
     ({'x': uuid.UUID('98f395f2-6ecb-46d8-98e4-926b8dfdd070')}, '{"x": "98f395f26ecb46d898e4926b8dfdd070"}'),  # No dashes, but is valid
     ({'x': uuid.UUID('98f395f2-6ecb-46d8-98e4-926b8dfdd070')}, '{"x": "98F395F26ECB46D898E4926B8DFDD070"}'),  # As above, uppercase
     ({'x': uuid.UUID('98f395f2-6ecb-46d8-98e4-926b8dfdd070')}, '{"x": "98F395F26ecb46d898e4926b8DFDD070"}'),  # As above, mixed case
+    ({'x': 'base64:Oly==='}, '{"x": "base64:Oly==="}'),  # invalid base64 string (too much padding)
 ]
 
 
