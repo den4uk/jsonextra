@@ -13,6 +13,14 @@ time_rex = re.compile(r'^[0-2]\d\:[0-5]\d:[0-5]\d\.?\d{,6}?$')
 BYTES_PREFIX = 'base64:'
 bytes_rex = re.compile(BYTES_PREFIX + r'([\w\d\+/]*?\={,2}?)$', re.DOTALL)
 
+_all_rex = ['uuid_rex', 'datetime_rex', 'date_rex', 'time_rex', 'bytes_rex']
+
+
+def disable_rex(rex):
+    """Disables a regulax expresseion for matching"""
+    assert rex in _all_rex, f'Cannot disable rex which is not allowed! Available: {_all_rex}'
+    globals()[rex] = None
+
 
 class ExtraEncoder(json.JSONEncoder):
 
@@ -38,15 +46,15 @@ class ExtraDecoder(json.JSONDecoder):
     @staticmethod
     def _apply_extras(value: str):
         with contextlib.suppress(ValueError):
-            if uuid_rex.match(value):
+            if uuid_rex and uuid_rex.match(value):
                 return uuid.UUID(value)
-            elif date_rex.match(value):
+            elif date_rex and date_rex.match(value):
                 return dateutil.parser.parse(value).date()
-            elif datetime_rex.match(value):
+            elif datetime_rex and datetime_rex.match(value):
                 return dateutil.parser.parse(value)
-            elif time_rex.match(value):
+            elif time_rex and time_rex.match(value):
                 return dateutil.parser.parse(value).time()
-            else:
+            elif bytes_rex:
                 try_bytes = bytes_rex.match(value)
                 if try_bytes:
                     return base64.b64decode(try_bytes.groups()[0])
