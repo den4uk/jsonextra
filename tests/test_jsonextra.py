@@ -154,3 +154,9 @@ def test_random_bytes():
         my_obj = {'x': secrets.token_bytes(n)}
         serialized = jsonextra.dumps(my_obj)
         assert jsonextra.loads(serialized) == my_obj
+
+
+def test_disable_rex():
+    assert jsonextra.loads('{"x": "1991-02-16"}') == {'x': datetime.date(1991, 2, 16)}
+    jsonextra.disable_rex('date_rex')
+    assert jsonextra.loads('{"x": "1991-02-16"}') == {'x': '1991-02-16'}
