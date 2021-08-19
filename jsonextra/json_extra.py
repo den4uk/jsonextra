@@ -22,6 +22,10 @@ def disable_rex(rex):
     globals()[rex] = None
 
 
+def enable_date_rex():
+    globals()["date_rex"] = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d$')
+
+
 class ExtraEncoder(json.JSONEncoder):
 
     @staticmethod

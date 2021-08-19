@@ -1,3 +1,5 @@
+import re
+
 import pytest
 import io
 import uuid
@@ -160,3 +162,4 @@ def test_disable_rex():
     assert jsonextra.loads('{"x": "1991-02-16"}') == {'x': datetime.date(1991, 2, 16)}
     jsonextra.disable_rex('date_rex')
     assert jsonextra.loads('{"x": "1991-02-16"}') == {'x': '1991-02-16'}
+    jsonextra.enable_date_rex()
