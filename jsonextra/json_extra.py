@@ -15,15 +15,22 @@ bytes_rex = re.compile(BYTES_PREFIX + r'([\w\d\+/]*?\={,2}?)$', re.DOTALL)
 
 _all_rex = ['uuid_rex', 'datetime_rex', 'date_rex', 'time_rex', 'bytes_rex']
 
+class regex_manager():
+    regex = [re.compile(r'^[0-9a-f]{8}\-?[0-9a-f]{4}\-?4[0-9a-f]{3}\-?[89ab][0-9a-f]{3}\-?[0-9a-f]{12}$', re.I),
+             re.compile(r'^\d{4}\-[01]\d\-[0-3]\d[\sT][0-2]\d\:[0-5]\d\:[0-5]\d'),
+             re.compile(r'^\d{4}\-[01]\d\-[0-3]\d$'),
+             re.compile(r'^[0-2]\d\:[0-5]\d:[0-5]\d\.?\d{,6}?$'),
+             re.compile(BYTES_PREFIX + r'([\w\d\+/]*?\={,2}?)$', re.DOTALL)]
 
-def disable_rex(rex):
-    """Disables a regulax expresseion for matching"""
-    assert rex in _all_rex, f'Cannot disable rex which is not allowed! Available: {_all_rex}'
-    globals()[rex] = None
+    index = {"uuid_rex": 0, "datetime_rex": 1, "date_rex": 2, "time_rex": 3, "bytes_rex": 4}
 
+    def enable_rex(self, rex):
+        assert rex in _all_rex, f'Cannot disable rex which is not allowed! Available: {_all_rex}'
+        globals()[rex] = self.regex[self.index[rex]]
 
-def enable_date_rex():
-    globals()["date_rex"] = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d$')
+    def disable_rex(self, rex):
+        assert rex in _all_rex, f'Cannot disable rex which is not allowed! Available: {_all_rex}'
+        globals()[rex] = None
 
 
 class ExtraEncoder(json.JSONEncoder):
