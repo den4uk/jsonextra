@@ -21,7 +21,12 @@ def disable_rex(rex):
     assert rex in _all_rex, f'Cannot disable rex which is not allowed! Available: {_all_rex}'
     globals()[rex] = None
 
+    
+def enable_rex(rex, val):
+    """Enables a regulax expresseion for matching"""
+    globals()[rex] = re.compile(val)
 
+    
 class ExtraEncoder(json.JSONEncoder):
 
     @staticmethod
