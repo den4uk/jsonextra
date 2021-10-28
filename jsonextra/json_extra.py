@@ -5,21 +5,55 @@ import base64
 import datetime
 import contextlib
 import dateutil.parser
+from typing import Union
 
-uuid_rex = re.compile(r'^[0-9a-f]{8}\-?[0-9a-f]{4}\-?4[0-9a-f]{3}\-?[89ab][0-9a-f]{3}\-?[0-9a-f]{12}$', re.I)
-datetime_rex = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d[\sT][0-2]\d\:[0-5]\d\:[0-5]\d')
-date_rex = re.compile(r'^\d{4}\-[01]\d\-[0-3]\d$')
-time_rex = re.compile(r'^[0-2]\d\:[0-5]\d:[0-5]\d\.?\d{,6}?$')
-BYTES_PREFIX = 'base64:'
-bytes_rex = re.compile(BYTES_PREFIX + r'([\w\d\+/]*?\={,2}?)$', re.DOTALL)
 
-_all_rex = ['uuid_rex', 'datetime_rex', 'date_rex', 'time_rex', 'bytes_rex']
+class _RegexManager:
+    BYTES_PREFIX = 'base64:'
+    REGEX = {
+        'uuid_rex': re.compile(r'^[0-9a-f]{8}\-?[0-9a-f]{4}\-?4[0-9a-f]{3}\-?[89ab][0-9a-f]{3}\-?[0-9a-f]{12}$', re.I),
+        'datetime_rex': re.compile(r'^\d{4}\-[01]\d\-[0-3]\d[\sT][0-2]\d\:[0-5]\d\:[0-5]\d'),
+        'date_rex': re.compile(r'^\d{4}\-[01]\d\-[0-3]\d$'),
+        'time_rex': re.compile(r'^[0-2]\d\:[0-5]\d:[0-5]\d\.?\d{,6}?$'),
+        'bytes_rex': re.compile(BYTES_PREFIX + r'([\w\d\+/]*?\={,2}?)$', re.DOTALL),
+    }
+    registry = {k: True for k in REGEX.keys()}
+
+    @classmethod
+    def is_match(cls, rex_name: str, value: object, return_value: bool = False) -> bool:
+        rex = cls.REGEX.get(rex_name)
+        if rex and cls.registry[rex_name] and rex.match(value):
+            return True
+        return False
+
+    @classmethod
+    def get_match(cls, rex_name: str, value: object) -> Union[re.Match, None]:
+        rex = cls.REGEX.get(rex_name)
+        if rex and cls.registry[rex_name]:
+            return rex.match(value)
+
+    @classmethod
+    def toggle_rex(cls, rex_name: str, value: bool) -> None:
+        assert rex_name in cls.registry, f'Unknown regex name supplied. Available: {[*cls.registry]}'
+        cls.registry[rex_name] = value
+
+    @classmethod
+    def disable_rex(cls, rex_name: str) -> None:
+        cls.toggle_rex(rex_name, False)
+
+    @classmethod
+    def enable_rex(cls, rex_name: str) -> None:
+        cls.toggle_rex(rex_name, True)
 
 
 def disable_rex(rex):
     """Disables a regulax expresseion for matching"""
-    assert rex in _all_rex, f'Cannot disable rex which is not allowed! Available: {_all_rex}'
-    globals()[rex] = None
+    _RegexManager.disable_rex(rex)
+
+
+def enable_rex(rex):
+    """Enables a regulax expresseion for matching"""
+    _RegexManager.enable_rex(rex)
 
 
 class ExtraEncoder(json.JSONEncoder):
@@ -33,7 +67,7 @@ class ExtraEncoder(json.JSONEncoder):
             return super().default(obj)
         except TypeError:
             if isinstance(obj, bytes):
-                return (BYTES_PREFIX + self.bytes_to_b64(obj))
+                return (_RegexManager.BYTES_PREFIX + self.bytes_to_b64(obj))
             elif isinstance(obj, (datetime.datetime, datetime.date, datetime.time)):
                 return obj.isoformat()
             return str(obj)
@@ -46,18 +80,18 @@ class ExtraDecoder(json.JSONDecoder):
     @staticmethod
     def _apply_extras(value: str):
         with contextlib.suppress(ValueError):
-            if uuid_rex and uuid_rex.match(value):
+            if _RegexManager.is_match('uuid_rex', value):
                 return uuid.UUID(value)
-            elif date_rex and date_rex.match(value):
+            elif _RegexManager.is_match('date_rex', value):
                 return dateutil.parser.parse(value).date()
-            elif datetime_rex and datetime_rex.match(value):
+            elif _RegexManager.is_match('datetime_rex', value):
                 return dateutil.parser.parse(value)
-            elif time_rex and time_rex.match(value):
+            elif _RegexManager.is_match('time_rex', value):
                 return dateutil.parser.parse(value).time()
-            elif bytes_rex:
-                try_bytes = bytes_rex.match(value)
-                if try_bytes:
-                    return base64.b64decode(try_bytes.groups()[0])
+            elif _RegexManager.registry['bytes_rex']:
+                bytes_match = _RegexManager.get_match('bytes_rex', value)
+                if bytes_match:
+                    return base64.b64decode(bytes_match.groups()[0])
         return value
 
     def object_hook(self, obj):
