@@ -5,4 +5,4 @@ pytest-cov
 coveralls
 codecov
 flake8
-bumpversion
+bump2version
